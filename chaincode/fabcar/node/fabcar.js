@@ -167,10 +167,10 @@ let Chaincode = class {
 
     if (transfertoBytes.toString().length > 0) {
       var obj1 = JSON.parse(transfertoBytes.toString());
-      var keys1 = Object.keys(obj);
+      var keys1 = Object.keys(obj1);
       for (var i = 0; i < keys1.length; i++) {
-        console.log(obj[keys1[i]]);
-        transferFile[keys1[i]] = obj[keys1[i]];
+        console.log(obj1[keys1[i]]);
+        transferFile[keys1[i]] = obj1[keys1[i]];
       }
     }
 
