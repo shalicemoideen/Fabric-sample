@@ -176,9 +176,29 @@ app.post('/transferFile', function(req, res) {
     var userid = parsedUrl.userid || req.body.userid;
     var transferto = parsedUrl.transferto || req.body.transferto;
     var fileid = parsedUrl.fileid || req.body.fileid;
-    var quantity = parsedUrl.quantity || req.body.quantity;
+    
 	
-	files.transferFile(userid, transferto, fileid, quantity)
+	files.transferFile(userid, transferto, fileid)
+	.then(function(message) {
+		console.log("Response comes here");
+		res.send(message);
+	}).catch((err) => {
+		console.error('Failed to query from create file :: ' + err);
+	});
+});
+
+
+
+
+app.post('/changeOwnership', function(req, res) {
+	console.log('End pt :  /changeOwnership');
+	var parsedUrl = qs.parse(url.parse(req.url).query);
+    var userid = parsedUrl.userid || req.body.userid;
+    var transferto = parsedUrl.transferto || req.body.transferto;
+    var fileid = parsedUrl.fileid || req.body.fileid;
+    
+	
+	files.changeOwnership(userid, transferto, fileid)
 	.then(function(message) {
 		console.log("Response comes here");
 		res.send(message);

@@ -132,15 +132,15 @@ let Chaincode = class {
 
   async transferFile(stub, args) {
     console.info('=========== START : Create File ==========');
-    if(args.length != 4) {
-      throw new Error('Incorrect number of arguments, Expecting 4');
+    if(args.length != 3) {
+      throw new Error('Incorrect number of arguments, Expecting 3');
     }
     var testfile = [];
 
     var userid = args[0];
     var transferto = args[1];
     var fileid = args[2];
-    var count = args[3];
+    // var count = args[3];
 
     var arFile = {};
     var transferFile = {};
@@ -154,12 +154,12 @@ let Chaincode = class {
         arFile[keys[i]] = obj[keys[i]];
 
         if(keys[i] == fileid){
-          var oldcount = obj[keys[i]]['count'];
-          console.log(oldcount,"oldcount");
-          var newcount = oldcount - count;
-          console.log(newcount,"newcount");
-          arFile[keys[i]]['count'] = newcount;
-          obj[keys[i]]['count'] = count;
+          // var oldcount = obj[keys[i]]['count'];
+          // console.log(oldcount,"oldcount");
+          // var newcount = oldcount - count;
+          // console.log(newcount,"newcount");
+          // arFile[keys[i]]['count'] = newcount;
+          // obj[keys[i]]['count'] = count;
           transferFile[keys[i]] = obj[keys[i]];
         }
       }
@@ -183,6 +183,61 @@ let Chaincode = class {
     await stub.putState(args[0], Buffer.from(JSON.stringify(arFile)));
     console.info('============= END : Create File ===========');
   }
+
+
+
+  async changeOwnership(stub, args) {
+    console.info('=========== START : Change ownership File ==========');
+    if(args.length != 3) {
+      throw new Error('Incorrect number of arguments, Expecting 3');
+    }
+    var testfile = [];
+
+    var userid = args[0];
+    var transferto = args[1];
+    var fileid = args[2];
+    // var count = args[3];
+
+    var arFile = {};
+    var transferFile = {};
+    let carAsBytes = await stub.getState(args[0]); //get the user from chaincode state
+    let transfertoBytes = await stub.getState(args[1]); //get the transferee user from chaincode state
+    if (carAsBytes.toString().length > 0) {
+      var obj = JSON.parse(carAsBytes.toString());
+      var keys = Object.keys(obj);
+      for (var i = 0; i < keys.length; i++) {
+        console.log(obj[keys[i]]);
+        if(keys[i] == fileid){
+          transferFile[keys[i]] = obj[keys[i]];
+        }
+        else{
+          arFile[keys[i]] = obj[keys[i]];
+        }
+      }
+    }
+
+    if (transfertoBytes.toString().length > 0) {
+      var obj1 = JSON.parse(transfertoBytes.toString());
+      var keys1 = Object.keys(obj1);
+      for (var i = 0; i < keys1.length; i++) {
+        console.log(obj1[keys1[i]]);
+        transferFile[keys1[i]] = obj1[keys1[i]];
+      }
+    }
+
+    console.info(JSON.stringify(arFile));
+    console.info(args[0]);
+    console.log("After appending");
+    console.log(JSON.stringify(arFile));
+
+    await stub.putState(transferto, Buffer.from(JSON.stringify(transferFile)));
+    await stub.putState(args[0], Buffer.from(JSON.stringify(arFile)));
+    console.info('============= END : Change Ownership File ===========');
+  }
+
+
+
+  
 
   async queryAllCars(stub, args) {
 
